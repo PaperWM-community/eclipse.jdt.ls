@@ -72,6 +72,14 @@ public class JDTDelegateCommandHandler implements IDelegateCommandHandler {
 					return handler.stringFormatting((String) arguments.get(0), JSONUtility.toModel(arguments.get(1), Map.class), Integer.parseInt((String) arguments.get(2)), monitor);
 				case "java.edit.handlePasteEvent":
 					return PasteEventHandler.handlePasteEvent(JSONUtility.toLsp4jModel(arguments.get(0), PasteEventParams.class), monitor);
+				case "java.command.applyEdit":
+					final WorkspaceEdit r = (WorkspaceEdit) arguments.get(0);
+					if (JavaLanguageServerPlugin.getPreferencesManager().getClientPreferences().isWorkspaceApplyEditSupported()) {
+						JavaLanguageServerPlugin.getInstance().getClientConnection().applyWorkspaceEdit((WorkspaceEdit) r);
+						return new Object();
+					} else {
+						return r
+					}
 				case "java.project.resolveSourceAttachment":
 					return SourceAttachmentCommand.resolveSourceAttachment(arguments, monitor);
 				case "java.project.updateSourceAttachment":
